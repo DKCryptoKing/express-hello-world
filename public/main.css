@@ -1,37 +1,44 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&display=swap");
-
 body {
-  background-color: #0f2c41;
-  background-image: url("https://i.imgur.com/PFnfpkq.png");
-  text-align: center;
-  font-weight: 700;
+  font-family: 'Source Sans Pro', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-#hello-wrapper {
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+nav {
+  background-color: #333;
   color: #fff;
-  font-family: 'Source Sans Pro', sans-serif;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.typewriter {
-  border-right: solid 5px transparent;
-  white-space: nowrap;
-  overflow: hidden;
-  font-family: 'Source Sans Pro', sans-serif;
-  font-size: 50px;
-  animation:
-  animated-text 1.2s steps(17, end) 1s 1 normal both
+.site-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: auto;
+  margin-left: 20px;
 }
 
-/* text animation */
-@keyframes animated-text {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
+.page-heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-#particles-js {
-  height: 100vh;
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.nav-link:not(:last-child)::after {
+  content: "|";
+  margin-left: 5px;
 }

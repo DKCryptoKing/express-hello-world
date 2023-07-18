@@ -1,0 +1,56 @@
+<!-- index.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Seizures</title>
+  <link rel="stylesheet" href="/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <style>
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .site-title {
+      font-weight: bold;
+      font-size: 18px;
+      margin-right: auto;
+      margin-left: 20px;
+    }
+
+    .page-heading {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    nav a:not(:last-child)::after {
+      content: "|";
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="site-title">Carla's Seizure Tracking</span>
+    <a href="/">Seizures</a>
+    <a href="/register">Register Seizure</a>
+    <a href="/statistics">Statistics</a>
+  </nav>
+  <div class="container">
+    <h1 class="page-heading">Seizures</h1>
+    <div id="tableDiv"></div>
+  </div>
+  <script src="/js/dbData.js"></script>
+</body>
+</html>

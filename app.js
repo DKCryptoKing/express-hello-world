@@ -6,6 +6,21 @@ const Test = require('./models/Seizure'); // Make sure this path is correct
 
 const app = express();
 
+// Set up view engine
+app.set('view engine', 'ejs');
+
+app.get('/', function (req, res) {
+  res.render('index');
+});
+
+app.get('/register', function (req, res) {
+  res.render('register');
+});
+
+app.get('/statistics', function (req, res) {
+  res.render('statistics');
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected...'))
@@ -33,9 +48,14 @@ app.use(express.static('public', options));
 
 // API endpoint for fetching data from MongoDB
 app.get('/api/data', (req, res) => {
+  const { page = 1, limit = 200 } = req.query;
+
   Test.find()
-    .then(data => res.json(data))
-    .catch(err => res.status(500).send(err));
+    .skip((page - 1) * limit)
+    .limit(parseInt(limit))
+    .exec()
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).send(err));
 });
 
 // Catch all handler for all other requests
@@ -51,6 +71,6 @@ app.use('*', (req,res) => {
     params: req.params
   })
   .end()
-})
+});
 
-module.exports = app
+module.exports = app;
