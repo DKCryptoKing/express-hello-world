@@ -1,8 +1,16 @@
-const express = require('express')
-const path = require("path");
-const app = express()
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
+const Test = require('./models/Seizure'); // Make sure this path is correct
 
-// #############################################################################
+const app = express();
+
+// Connect to MongoDB
+mongoose.connect(process.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected...'))
+  .catch((err) => console.log(err));
+
 // Logs all request paths and method
 app.use(function (req, res, next) {
   res.set('x-timestamp', Date.now())
@@ -11,7 +19,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-// #############################################################################
 // This configures static hosting for files in /public that have the extensions
 // listed in the array.
 var options = {
@@ -22,22 +29,28 @@ var options = {
   maxAge: '1m',
   redirect: false
 }
-app.use(express.static('public', options))
+app.use(express.static('public', options));
 
-// #############################################################################
-// Catch all handler for all other request.
+// API endpoint for fetching data from MongoDB
+app.get('/api/data', (req, res) => {
+  Test.find()
+    .then(data => res.json(data))
+    .catch(err => res.status(500).send(err));
+});
+
+// Catch all handler for all other requests
 app.use('*', (req,res) => {
   res.json({
-      at: new Date().toISOString(),
-      method: req.method,
-      hostname: req.hostname,
-      ip: req.ip,
-      query: req.query,
-      headers: req.headers,
-      cookies: req.cookies,
-      params: req.params
-    })
-    .end()
+    at: new Date().toISOString(),
+    method: req.method,
+    hostname: req.hostname,
+    ip: req.ip,
+    query: req.query,
+    headers: req.headers,
+    cookies: req.cookies,
+    params: req.params
+  })
+  .end()
 })
 
 module.exports = app
