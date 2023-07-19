@@ -5,6 +5,7 @@
   <title>Seizures</title>
   <link rel="stylesheet" href="/main.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  
   <style>
     nav {
       background-color: #333;
@@ -50,7 +51,57 @@
   <div class="container">
     <h1 class="page-heading">Seizures</h1>
     <div id="tableDiv"></div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editForm">
+              <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location" required>
+              </div>
+              <div class="mb-3">
+                <label for="severity" class="form-label">Severity</label>
+                <input type="text" class="form-control" id="severity" name="severity" required>
+              </div>
+              <div class="mb-3">
+                <label for="duration" class="form-label">Duration</label>
+                <input type="text" class="form-control" id="duration" name="duration" required>
+              </div>
+              <div class="mb-3">
+                <label for="vomiting" class="form-label">Vomiting</label>
+                <input type="text" class="form-control" id="vomiting" name="vomiting" required>
+              </div>
+              <div class="mb-3">
+                <label for="calledHome" class="form-label">Called Home</label>
+                <input type="text" class="form-control" id="calledHome" name="calledHome" required>
+              </div>
+              <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+              </div>
+              <div class="mb-3">
+                <label for="trigger" class="form-label">Trigger</label>
+                <input type="text" class="form-control" id="trigger" name="trigger" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
   <script src="/js/dbData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
