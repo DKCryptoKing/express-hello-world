@@ -1,4 +1,15 @@
 // dbData.js
+const rowHeaders = [
+  'Date',
+  'Location',
+  'Severity',
+  'Duration',
+  'Vomiting',
+  'Called Home',
+  'Trigger',
+  'Note'
+];
+
 function unlockPage() {
   const modalBackdrop = document.querySelector('.modal-backdrop');
   if (modalBackdrop) {
@@ -70,6 +81,13 @@ function fetchTableData() {
               td.textContent = item[key];
             }
 
+            if (key === 'note') {
+              // Truncate note text and add click event to open modal
+              const truncatedNote = truncateText(item[key], 100);
+              td.innerHTML = `<span class="note-preview">${truncatedNote}</span>`;
+              td.addEventListener('click', () => openCompleteDataModal(item));
+            }
+
             row.appendChild(td);
           }
         });
@@ -121,6 +139,50 @@ function formatDate(dateString) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
+}
+
+function truncateText(text, maxLength) {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + '...';
+  }
+  return text;
+}
+
+function openCompleteDataModal(record) {
+  const completeDataModal = new bootstrap.Modal(document.getElementById('completeDataModal'));
+
+  completeDataModal.show();
+
+  const completeDataContainer = document.getElementById('completeDataContainer');
+  completeDataContainer.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.classList.add('table');
+
+  const tbody = document.createElement('tbody');
+
+  Object.entries(record).forEach(([key, value]) => {
+    if (key !== '_id' && key !== '__v' && key !== 'edit' && key !== 'delete') {
+      const row = document.createElement('tr');
+
+      const header = document.createElement('th');
+      header.textContent = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim();
+      row.appendChild(header);
+
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.appendChild(cell);
+
+      tbody.appendChild(row);
+    }
+  });
+
+  table.appendChild(tbody);
+  completeDataContainer.appendChild(table);
+
+  completeDataModal._element.addEventListener('hidden.bs.modal', () => {
+    unlockPage();
+  });
 }
 
 function editRecord(recordId) {
@@ -189,18 +251,6 @@ function deleteRecord(recordId) {
         console.log('Error deleting record:', error);
       });
   }
-}
-
-function fetchTotalRecordCount() {
-  fetch('/api/data')
-    .then((response) => response.json())
-    .then((data) => {
-      const totalRecordsElement = document.getElementById('totalRecords');
-      totalRecordsElement.textContent = `(${data.length})`;
-    })
-    .catch((error) => {
-      console.log('Error fetching total record count:', error);
-    });
 }
 
 // Fetch initial table data on page load
