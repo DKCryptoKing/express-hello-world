@@ -1,6 +1,5 @@
 // Function to handle editing a record
 function editRecord(recordId) {
-  console.log('Record ID:', recordId);
   // Fetch the record data from the API
   fetch(`/api/data/${recordId}`)
     .then((response) => response.json())
@@ -55,13 +54,13 @@ function editRecord(recordId) {
     });
 }
 
-// Function to format date as yyyy-mm-dd
+// Function to format date as DD-MM-YYYY
 function formatDate(dateString) {
   const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 }
 
 // Fetch table data
@@ -136,7 +135,7 @@ function fetchTableData() {
         // Create Edit button
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
-        editButton.classList.add('btn', 'btn-primary', 'btn-sm');
+        editButton.classList.add('btn', 'btn-primary', 'btn-sm', 'me-1'); // Added 'me-1' class for margin
         editButton.setAttribute('data-bs-toggle', 'modal');
         editButton.setAttribute('data-bs-target', '#editModal');
         editButton.addEventListener('click', () => editRecord(item._id));
@@ -150,6 +149,7 @@ function fetchTableData() {
         // Append buttons to a cell
         const buttonCell = document.createElement('td');
         buttonCell.appendChild(editButton);
+        buttonCell.appendChild(document.createTextNode(' ')); // Added space between buttons
         buttonCell.appendChild(deleteButton);
 
         row.appendChild(buttonCell);
@@ -158,9 +158,21 @@ function fetchTableData() {
 
       table.appendChild(tbody);
       tableDiv.appendChild(table);
+
+      // Update the total count in the headline
+      const totalCount = data.length;
+      const pageHeading = document.querySelector('.page-heading');
+      pageHeading.textContent = `Seizures (${totalCount})`;
     })
     .catch((error) => {
       console.log('Error fetching data:', error);
+    })
+    .finally(() => {
+      // Unlock the screen after updating or deleting a record
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.remove();
+      }
     });
 }
 

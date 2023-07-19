@@ -27,6 +27,14 @@
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .page-heading span {
+      margin-left: 10px;
+      font-size: 14px;
+      font-weight: normal;
     }
 
     nav a {
@@ -49,7 +57,7 @@
     <a href="/statistics">Statistics</a>
   </nav>
   <div class="container">
-    <h1 class="page-heading">Seizures</h1>
+    <h1 class="page-heading">Seizures <span id="totalRecords"></span></h1>
     <div id="tableDiv"></div>
 
     <!-- Edit Modal -->
@@ -103,5 +111,24 @@
 
   <script src="/js/dbData.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+  <script>
+    // Fetch total record count
+    function fetchTotalRecordCount() {
+      fetch('/api/data')
+        .then((response) => response.json())
+        .then((data) => {
+          const totalRecordsElement = document.getElementById('totalRecords');
+          totalRecordsElement.textContent = `(${data.length})`;
+        })
+        .catch((error) => {
+          console.log('Error fetching total record count:', error);
+        });
+    }
+
+    // Fetch initial table data on page load
+    fetchTableData();
+    // Fetch total record count
+    fetchTotalRecordCount();
+  </script>
 </body>
 </html>
