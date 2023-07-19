@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const Test = require('./models/Seizure');
+const Seizure = require('./models/Seizure');
 
 const app = express();
 app.use(express.json());
@@ -51,7 +51,7 @@ app.use(express.static('public', options));
 app.get('/api/data', (req, res) => {
   const { page = 1, limit = 200 } = req.query;
 
-  Test.find()
+  Seizure.find()
     .skip((page - 1) * limit)
     .limit(parseInt(limit))
     .exec()
@@ -63,7 +63,7 @@ app.get('/api/data', (req, res) => {
 app.delete('/api/data/:id', (req, res) => {
   const id = req.params.id;
 
-  Test.findByIdAndDelete(id)
+  Seizure.findByIdAndDelete(id)
     .then(() => res.status(200).json({ message: 'Record deleted successfully' }))
     .catch((err) => res.status(500).json({ error: err.message }));
 });
@@ -75,7 +75,7 @@ app.put('/api/data/:id', (req, res) => {
   console.log('Record ID:', id);
   console.log('Updated Data:', updatedData);
 
-  Test.findByIdAndUpdate(id, updatedData, { new: true })
+  Seizure.findByIdAndUpdate(id, updatedData, { new: true })
     .then((updatedRecord) => res.status(200).json(updatedRecord))
     .catch((err) => res.status(500).json({ error: err.message }));
 });
@@ -84,7 +84,7 @@ app.put('/api/data/:id', (req, res) => {
 app.get('/api/data/:id', (req, res) => {
   const recordId = req.params.id;
 
-  Test.findById(recordId)
+  Seizure.findById(recordId)
     .then((record) => {
       if (!record) {
         // If record not found, return a 404 response
@@ -98,6 +98,20 @@ app.get('/api/data/:id', (req, res) => {
     .catch((error) => {
       console.log('Error fetching record:', error);
       res.status(500).json({ error: 'Error fetching record' });
+    });
+});
+
+// API endpoint for creating a new record
+app.post('/api/data', (req, res) => {
+  const newRecord = req.body;
+
+  Seizure.create(newRecord)
+    .then((record) => {
+      res.status(201).json(record);
+    })
+    .catch((error) => {
+      console.log('Error creating record:', error);
+      res.status(500).json({ error: 'Error creating record' });
     });
 });
 

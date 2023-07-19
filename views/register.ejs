@@ -1,4 +1,4 @@
-<!-- statistics.ejs -->
+<!-- register.ejs -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,8 +24,9 @@
 
     .page-heading {
       font-size: 24px;
+      margin-top: 20px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     nav a {
@@ -38,6 +39,52 @@
       content: "|";
       margin-left: 5px;
     }
+
+    /* Adjustments */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .form-group .form-label {
+      width: 20%;
+      margin-right: 5%;
+      text-align: right;
+    }
+
+    .form-group .form-control {
+      width: 75%;
+    }
+
+    #note {
+      height: 160px;
+    }
+  </style>
+  <style>
+    /* Mobile Styles */
+    @media (max-width: 576px) {
+      .form-group {
+        flex-wrap: wrap;
+      }
+
+      .form-group .form-label {
+        width: 100%;
+        margin-right: 0;
+        text-align: left;
+        margin-bottom: 5px;
+      }
+
+      .form-group .form-control {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -49,7 +96,85 @@
   </nav>
   <div class="container">
     <h1 class="page-heading">Register Episode</h1>
-    <!-- Statistics Page Content Goes Here -->
+    <form id="registerForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" name="date" value="<%= (new Date()).toISOString().split('T')[0] %>" required>
+          </div>
+          <div class="form-group">
+            <label for="location" class="form-label">Location</label>
+            <select class="form-select" id="location" name="location" required>
+              <option value=""></option>
+              <option value="School">School</option>
+              <option value="Home">Home</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="severity" class="form-label">Severity</label>
+            <select class="form-select" id="severity" name="severity" required>
+              <option value=""></option>
+              <option value="Mild">Mild</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Severe">Severe</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="duration" class="form-label">Duration</label>
+            <select class="form-select" id="duration" name="duration" required>
+              <option value=""></option>
+              <option value="Few hours">Few hours</option>
+              <option value="Half day">Half day</option>
+              <option value="Full day">Full day</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="vomiting" class="form-label">Vomiting</label>
+            <select class="form-select" id="vomiting" name="vomiting" required>
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="calledHome" class="form-label">Called Home</label>
+            <select class="form-select" id="calledHome" name="calledHome" required>
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="N/A">N/A</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="trigger" class="form-label">Trigger</label>
+            <select class="form-select" id="trigger" name="trigger" required>
+              <option value=""></option>
+              <option value="Unknown">Unknown</option>
+              <option value="Stress">Stress</option>
+              <option value="Chock">Chock</option>
+              <option value="Illness">Illness</option>
+              <option value="Spontaneous">Spontaneous</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="flex-basis: 100%;">
+        <label for="note" class="form-label">Note</label>
+        <textarea class="form-control" id="note" name="note" rows="8"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
   </div>
+  <script src="/js/register.js"></script>
 </body>
 </html>
