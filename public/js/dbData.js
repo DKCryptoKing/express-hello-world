@@ -1,4 +1,3 @@
-// dbData.js
 const rowHeaders = [
   'Date',
   'Location',
@@ -57,6 +56,9 @@ function fetchTableData() {
       data.forEach((item) => {
         const row = document.createElement('tr');
 
+        // Store the original MongoDB ID on the row itself
+        row.dataset.id = item._id;
+
         headers.forEach((key) => {
           if (key !== '_id' && key !== '__v') {
             const td = document.createElement('td');
@@ -83,10 +85,22 @@ function fetchTableData() {
 
             if (key === 'note') {
               // Truncate note text and add click event to open modal
-              const truncatedNote = truncateText(item[key], 100);
+              const truncatedNote = truncateText(item[key], 30);
               td.innerHTML = `<span class="note-preview">${truncatedNote}</span>`;
-              td.addEventListener('click', () => openCompleteDataModal(item));
+            
+              // If the text was truncated, add an ellipsis and a tooltip
+              if(item[key].length > 30) {
+                td.innerHTML += '()';
+                td.title = "Click to see full note"; // Add a tooltip
+              }
+              
+              td.addEventListener('click', (event) => {
+                const row = event.target.closest('tr');
+                const id = row.dataset.id;
+                openCompleteDataModal(id);
+              });
             }
+            
 
             row.appendChild(td);
           }
@@ -148,42 +162,61 @@ function truncateText(text, maxLength) {
   return text;
 }
 
-function openCompleteDataModal(record) {
-  const completeDataModal = new bootstrap.Modal(document.getElementById('completeDataModal'));
+function openCompleteDataModal(recordId) {
+  // fetch the data for the record with recordId
+  fetch(`/api/data/${recordId}`)
+    .then(response => response.json())
+    .then(record => {
+      const completeDataModal = new bootstrap.Modal(document.getElementById('completeDataModal'));
+      completeDataModal.show();
 
-  completeDataModal.show();
+      const completeDataContainer = document.getElementById('completeDataContainer');
+      completeDataContainer.innerHTML = '';
 
-  const completeDataContainer = document.getElementById('completeDataContainer');
-  completeDataContainer.innerHTML = '';
+      const table = document.createElement('table');
+      table.classList.add('table');
 
-  const table = document.createElement('table');
-  table.classList.add('table');
+      const tbody = document.createElement('tbody');
 
-  const tbody = document.createElement('tbody');
+      Object.entries(record).forEach(([key, value]) => {
+        if (key !== '_id' && key !== '__v' && key !== 'edit' && key !== 'delete') {
+          const row = document.createElement('tr');
 
-  Object.entries(record).forEach(([key, value]) => {
-    if (key !== '_id' && key !== '__v' && key !== 'edit' && key !== 'delete') {
-      const row = document.createElement('tr');
+          const header = document.createElement('th');
+          header.textContent = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim();
+          row.appendChild(header);
 
-      const header = document.createElement('th');
-      header.textContent = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim();
-      row.appendChild(header);
+          const cell = document.createElement('td');
 
-      const cell = document.createElement('td');
-      cell.textContent = value;
-      row.appendChild(cell);
+          if (key === 'note') {
+            // get full note text from the data attribute
+            const fullNoteText = value;
+            cell.textContent = fullNoteText;
+          } else if (key === 'date') {
+            // format the date
+            const formattedDate = formatDate(new Date(value));
+            cell.textContent = formattedDate;
+          } else {
+            cell.textContent = value;
+          }
 
-      tbody.appendChild(row);
-    }
-  });
+          row.appendChild(cell);
 
-  table.appendChild(tbody);
-  completeDataContainer.appendChild(table);
+          tbody.appendChild(row);
+        }
+      });
 
-  completeDataModal._element.addEventListener('hidden.bs.modal', () => {
-    unlockPage();
-  });
+      table.appendChild(tbody);
+      completeDataContainer.appendChild(table);
+
+      completeDataModal._element.addEventListener('hidden.bs.modal', () => {
+        unlockPage();
+      });
+    })
+    .catch(error => console.log('Error fetching record:', error));
 }
+
+
 
 function editRecord(recordId) {
   fetch(`/api/data/${recordId}`)
