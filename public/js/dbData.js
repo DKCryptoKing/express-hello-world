@@ -85,11 +85,11 @@ function fetchTableData() {
 
             if (key === 'note') {
               // Truncate note text and add click event to open modal
-              const truncatedNote = truncateText(item[key], 30);
+              const truncatedNote = truncateText(item[key], 50);
               td.innerHTML = `<span class="note-preview">${truncatedNote}</span>`;
             
               // If the text was truncated, add an ellipsis and a tooltip
-              if(item[key].length > 30) {
+              if(item[key].length > 50) {
                 td.innerHTML += '()';
                 td.title = "Click to see full note"; // Add a tooltip
               }
@@ -107,6 +107,7 @@ function fetchTableData() {
         });
 
         // Create Edit button
+        /*
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
         editButton.classList.add('btn', 'btn-primary', 'btn-sm', 'me-1'); // Added 'me-1' class for margin
@@ -127,6 +128,7 @@ function fetchTableData() {
         buttonCell.appendChild(deleteButton);
 
         row.appendChild(buttonCell);
+        */
         tbody.appendChild(row);
       });
 
@@ -179,7 +181,7 @@ function openCompleteDataModal(recordId) {
       const tbody = document.createElement('tbody');
 
       Object.entries(record).forEach(([key, value]) => {
-        if (key !== '_id' && key !== '__v' && key !== 'edit' && key !== 'delete') {
+        if (key !== '_id' && key !== '__v') {
           const row = document.createElement('tr');
 
           const header = document.createElement('th');
@@ -189,11 +191,9 @@ function openCompleteDataModal(recordId) {
           const cell = document.createElement('td');
 
           if (key === 'note') {
-            // get full note text from the data attribute
             const fullNoteText = value;
             cell.textContent = fullNoteText;
           } else if (key === 'date') {
-            // format the date
             const formattedDate = formatDate(new Date(value));
             cell.textContent = formattedDate;
           } else {
@@ -201,7 +201,6 @@ function openCompleteDataModal(recordId) {
           }
 
           row.appendChild(cell);
-
           tbody.appendChild(row);
         }
       });
@@ -209,13 +208,34 @@ function openCompleteDataModal(recordId) {
       table.appendChild(tbody);
       completeDataContainer.appendChild(table);
 
+      // Create Edit button
+      const editButton = document.createElement('button');
+      editButton.textContent = 'Edit';
+      editButton.classList.add('btn', 'btn-primary', 'btn-sm', 'me-1'); // Added 'me-1' class for margin
+      editButton.addEventListener('click', () => {
+        editRecord(record._id);
+        completeDataModal.hide(); // Hide the Complete Record modal when Edit button is clicked
+      });
+
+      // Create Delete button
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
+      deleteButton.addEventListener('click', () => {
+        deleteRecord(record._id);
+        completeDataModal.hide(); // Hide the Complete Record modal when Delete button is clicked
+      });
+
+      // Append buttons to the modal
+      completeDataContainer.appendChild(editButton);
+      completeDataContainer.appendChild(deleteButton);
+
       completeDataModal._element.addEventListener('hidden.bs.modal', () => {
         unlockPage();
       });
     })
     .catch(error => console.log('Error fetching record:', error));
 }
-
 
 
 function editRecord(recordId) {
