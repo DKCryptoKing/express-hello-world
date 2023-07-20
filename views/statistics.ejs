@@ -3,6 +3,7 @@
 <html>
 <head>
   <title>Statistics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
   <style>
@@ -38,6 +39,33 @@
       content: "|";
       margin-left: 5px;
     }
+
+    .chart-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  margin: auto;
+}
+
+.chart-container canvas {
+  width: 100%;
+  height: auto;
+}
+
+.chart-container::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 20px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+      
   </style>
 </head>
 <body>
@@ -49,11 +77,19 @@
   </nav>
   <div class="container">
     <h1 class="page-heading">Statistics</h1>
+    <div class="chart-container">
+      <canvas id="seizuresByLocationChart"></canvas>
+      <canvas id="seizuresBySeverityChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="seizuresByDurationChart"></canvas>
+      <canvas id="seizuresByVomitingChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="seizuresByTriggerChart"></canvas>
+    </div>
     <div id="totalSeizures"></div>
-    <div id="seizuresByLocation"></div>
-    <div id="mostCommonDuration"></div>
-    <div id="percentageWithVomiting"></div>
-    <div id="mostCommonTrigger"></div>
+    <!-- Rest of your HTML -->
   </div>
 
   <script src="/js/statistics.js"></script> <!-- Include the statistics.js file -->
